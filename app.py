@@ -8,7 +8,7 @@ medal_df = pd.read_csv("Olympics 2024 Medals Table.csv")
 competition_df = pd.read_csv("Olympics 2024.csv")
 
 # Streamlit App Layout
-st.title("Olympics 2024 Medal Analysis")
+st.title("Olympics 2024 Medal Analysis!")
 
 # Sidebar for navigation
 st.sidebar.image("o_logo.png", use_column_width=True)
