@@ -18,12 +18,12 @@ section = st.sidebar.radio("Go to", ["Medal Analysis", "Competitions Analysis"])
 # Medal Analysis Section
 if section == "Medal Analysis":
     st.write("### Olympics Medal Table")
-    st.dataframe(medal_df)
+    st.dataframe(medal_df) # initializes the df and displys it
 
     # Basic Statistics and Rankings
     st.write("## Basic Statistics and Rankings")
     st.write("#### Total Medal Count by Country")
-    st.bar_chart(medal_df.set_index('TEAM')['TOTAL'])
+    st.bar_chart(medal_df.set_index('TEAM')['TOTAL']) # bar graph in streamlit
 
     # Medal Proportions
     st.write("#### Medal Proportions for Each Country")
@@ -31,22 +31,23 @@ if section == "Medal Analysis":
     medal_df['Silver %'] = medal_df['SILVER'] / medal_df['TOTAL'] * 100
     medal_df['Bronze %'] = medal_df['BRONZE'] / medal_df['TOTAL'] * 100
 
+    # Display a matplotlib.pyplot figure
     fig, ax = plt.subplots(figsize=(10, 6))
     medal_df.set_index('TEAM')[['Gold %', 'Silver %', 'Bronze %']].plot(kind='bar', stacked=True, ax=ax)
     ax.set_ylabel("Percentage")
     ax.set_xticklabels(medal_df['TEAM'], rotation=90, ha='right', fontsize=10)
-    st.pyplot(fig)
+    st.pyplot(fig) # Display a matplotlib.pyplot figure
 
     # Country Comparison
     st.write("## Compare Countries")
     selected_countries = st.multiselect("Select Countries to Compare", medal_df['TEAM'].unique(), default=medal_df['TEAM'].unique()[0:2])
     comparison_df = medal_df[medal_df['TEAM'].isin(selected_countries)]
-    st.bar_chart(comparison_df.set_index('TEAM')[['GOLD', 'SILVER', 'BRONZE']])
+    st.bar_chart(comparison_df.set_index('TEAM')[['GOLD', 'SILVER', 'BRONZE']]) # bar graph in streamlit
 
     # Correlation Analysis
     st.write("## Correlation Between Medal Types")
     corr = medal_df[['GOLD', 'SILVER', 'BRONZE']].corr()
-    sns.heatmap(corr, annot=True, cmap="coolwarm")
+    sns.heatmap(corr, annot=True, cmap="coolwarm") # heatmap in streamlit
     st.pyplot(plt)
 
     # Country and Medal-wise Analysis
@@ -58,17 +59,19 @@ if section == "Medal Analysis":
         [country_data['GOLD'].values[0], country_data['SILVER'].values[0], country_data['BRONZE'].values[0]],
         labels=['Gold', 'Silver', 'Bronze'], autopct='%1.1f%%', colors=['#FFD700', '#C0C0C0', '#CD7F32']
     )
-    st.pyplot(fig)
+    st.pyplot(fig) # pie plot in streamlit
 
     # Medal-wise Analysis
     medal_type = st.selectbox("Select Medal Type for Analysis", ['GOLD', 'SILVER', 'BRONZE'])
     top_countries = medal_df.sort_values(by=medal_type, ascending=False).head(10)
-    st.bar_chart(top_countries.set_index('TEAM')[medal_type])
+    st.bar_chart(top_countries.set_index('TEAM')[medal_type]) # barchart and selectbox
 
-    # Static Analysis - Summary Statistics
+    '''
+    Static Analysis - Summary Statistics
+    '''
     st.write("## Static Analysis - Summary Statistics")
     st.write("#### Total Medals Overview")
-    st.write(medal_df[['GOLD', 'SILVER', 'BRONZE', 'TOTAL']].sum())
+    st.write(medal_df[['GOLD', 'SILVER', 'BRONZE', 'TOTAL']].sum()) # shows a basic table with sums
 
     st.write("#### Top Countries by Medal Type")
     top_gold = medal_df[medal_df['GOLD'] == medal_df['GOLD'].max()]['TEAM'].values[0]
@@ -81,11 +84,11 @@ if section == "Medal Analysis":
 # Competitions Analysis Section
 elif section == "Competitions Analysis":
     st.write("### Olympics Competitions Dataset")
-    st.dataframe(competition_df)
+    st.dataframe(competition_df) # initializes the df and displys it
 
-    # Analysis 1: Competition-Wise Medal Distribution
+    # Analysis 1: Competition-Wise Medal Distribution - stacked barchart
     st.write("## Competition-Wise Medal Distribution")
-    selected_competition = st.selectbox("Select Competition", competition_df['Competitions'].unique())
+    selected_competition = st.selectbox("Select Competition", competition_df['Competitions'].unique()) # individual competitions
     comp_data = competition_df[competition_df['Competitions'] == selected_competition]
 
     fig, ax = plt.subplots()
@@ -93,17 +96,17 @@ elif section == "Competitions Analysis":
     ax.set_ylabel("Medal Count")
     ax.set_title(f"Medal Distribution in {selected_competition}")
     ax.set_xticklabels(comp_data['NOC'], rotation=45, ha='right')
-    st.pyplot(fig)
+    st.pyplot(fig) # stacked barchart
 
     # Analysis 2: Top Performing Countries in Each Competition
     st.write("## Top Performing Countries in Each Competition")
     top_performing = comp_data.sort_values(by='Total', ascending=False).head(3)
     st.write(f"### Top 3 Countries in {selected_competition}")
-    st.dataframe(top_performing[['Rank', 'NOC', 'Gold', 'Silver', 'Bronze', 'Total']])
+    st.dataframe(top_performing[['Rank', 'NOC', 'Gold', 'Silver', 'Bronze', 'Total']]) # displays dataframe!
 
     # Analysis 3: Country-Wise Performance Across Competitions
     st.write("## Country-Wise Performance Across Competitions")
-    selected_country = st.selectbox("Select Country", competition_df['NOC'].unique())
+    selected_country = st.selectbox("Select Country", competition_df['NOC'].unique()) # select box
     country_data = competition_df[competition_df['NOC'] == selected_country]
 
     fig, ax = plt.subplots()
@@ -111,7 +114,7 @@ elif section == "Competitions Analysis":
     ax.set_ylabel("Medal Count")
     ax.set_title(f"{selected_country}'s Performance Across Competitions")
     ax.set_xticklabels(country_data['Competitions'], rotation=45, ha='right')
-    st.pyplot(fig)
+    st.pyplot(fig) # displays barchart
 
     # Analysis 4: Medal Efficiency
     st.write("## Medal Efficiency by Country")
@@ -122,7 +125,7 @@ elif section == "Competitions Analysis":
     sns.barplot(x='NOC', y='Efficiency', data=efficiency_data, ax=ax)
     ax.set_ylabel("Efficiency (%)")
     ax.set_xticklabels(efficiency_data['NOC'], rotation=90, ha='right')
-    st.pyplot(fig)
+    st.pyplot(fig) # plots barchart
 
     # Analysis 5: Comparison Between Competitions
     st.write("## Comparison Between Competitions")
@@ -132,7 +135,7 @@ elif section == "Competitions Analysis":
     sns.barplot(x='Competitions', y='Total', data=competition_totals, ax=ax)
     ax.set_ylabel("Total Medals")
     ax.set_xticklabels(competition_totals['Competitions'], rotation=90, ha='right')
-    st.pyplot(fig)
+    st.pyplot(fig) # plots barchart
 
     # # Analysis 6: Correlation Between Medal Types
     # st.write("## Correlation Between Medal Types")
